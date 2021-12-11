@@ -15,9 +15,14 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
+from SoftDesk_API.views import ProjectListViewset
 from rest_framework import routers
+
+router = routers.SimpleRouter()
+router.register('projects', ProjectListViewset, basename='project_list')
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('api-auth', include('rest_framework.urls'))
+    path('api-auth', include('rest_framework.urls')),
+    path('api/', include(router.urls))
 ]
