@@ -1,7 +1,9 @@
 from django.contrib import admin
 from SoftDesk_API.models import Project, Issue, Contributor, Comment
+from django.contrib.auth.models import User
 
-# class ProjectAdmin(admin.ModelAdmin):
+class UserAdmin(admin.ModelAdmin):
+    list_display = ['first_name', 'last_name', 'email', 'password']
 
 
 
