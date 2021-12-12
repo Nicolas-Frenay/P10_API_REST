@@ -10,7 +10,6 @@ from SoftDesk_API.serializers import ProjectListSerializer, \
 from rest_framework.permissions import IsAuthenticated
 
 
-
 class RegisterView(CreateAPIView):
     queryset = User.objects.all()
     # permission_classes = (AllowAny,)
@@ -46,7 +45,7 @@ class ProjectViewset(ModelViewSet, ProjectUserViewset):
     serializer_class = ProjectListSerializer
     detail_serializer_class = ProjectDetailsSerializer
 
-    permission_classes = [IsAuthenticated]
+    # permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
         return Project.objects.all()
@@ -61,19 +60,20 @@ class ProjectViewset(ModelViewSet, ProjectUserViewset):
         if serializer.is_valid():
             serializer.save()
             id = serializer.data['id']
-            Contributor.objects.create(user_id=request.user.id,
-                                       project_id_id=id, role='AUTHOR')
+            contributor = Contributor.objects.create(project_id_id=id,
+                                                     role='AUTHOR')
+            contributor.user_id.set([request.user.id,])
+            contributor.save()
             return Response(serializer.data)
         else:
             return Response(serializer.errors, status=400)
 
     def update(self, request, *args, **kwargs):
         project = self.get_object()
-        serializer = ProjectDetailsSerializer(project, data=request.data, partial=True)
+        serializer = ProjectDetailsSerializer(project, data=request.data,
+                                              partial=True)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data)
         else:
             return Response(serializer.errors, status=400)
-
-
