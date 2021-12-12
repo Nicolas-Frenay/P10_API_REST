@@ -26,7 +26,11 @@ class ProjectViewset(ModelViewSet):
     def get_queryset(self):
         return Project.objects.all()
 
-    # @action(detail=True, methods=['post'])
+    def get_serializer_class(self):
+        if self.action == 'retrieve':
+            return self.detail_serializer_class
+        return super().get_serializer_class()
+
     def create(self, request, *args, **kwargs):
         serializer = ProjectDetailsSerializer(data=request.data)
         if serializer.is_valid():

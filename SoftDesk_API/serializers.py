@@ -45,7 +45,7 @@ class RegisterSerializer(ModelSerializer):
 class ProjectListSerializer(ModelSerializer):
     class Meta:
         model = Project
-        fields = ['id', 'title']
+        fields = ['id', 'title', 'proj_type']
 
 
 class UserSerializer(ModelSerializer):
