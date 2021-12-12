@@ -67,7 +67,13 @@ class ProjectViewset(ModelViewSet, ProjectUserViewset):
         else:
             return Response(serializer.errors, status=400)
 
-
-
+    def update(self, request, *args, **kwargs):
+        project = self.get_object()
+        serializer = ProjectDetailsSerializer(project, data=request.data, partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        else:
+            return Response(serializer.errors, status=400)
 
 

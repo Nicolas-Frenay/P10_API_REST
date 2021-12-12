@@ -72,7 +72,7 @@ class Issue(models.Model):
     desc = models.CharField(max_length=1024)
     tag = models.CharField(max_length=16, choices=TAGS_LIST)
     priority = models.CharField(max_length=16, choices=PRIORITY_LIST)
-    project_id = models.IntegerField()
+    project_id = models.ForeignKey(to=Project, on_delete=models.CASCADE)
     status = models.CharField(max_length=16, choices=STATUS_LIST)
     author_user_id = models.ManyToManyField(to=settings.AUTH_USER_MODEL,
                                             related_name='author')
