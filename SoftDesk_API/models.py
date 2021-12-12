@@ -29,7 +29,8 @@ class Contributor(models.Model):
         (AUTHOR, 'author'),
         (CONTRIBUTOR, 'contributor')
     )
-    user_id = models.IntegerField(default=None)
+    user_id = models.ManyToManyField(to=settings.AUTH_USER_MODEL,
+                                            related_name='contributor')
     project_id = models.ForeignKey(to=Project,
                                    on_delete=models.CASCADE)
     # permissions =  choice field ?

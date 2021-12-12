@@ -62,10 +62,7 @@ class ContributorSerializer(ModelSerializer):
         fields = ('users', 'role')
 
     def get_users(self, instance):
-        queryset = User.objects.filter(
-            id__in=(
-                Contributor.objects.filter(project_id=instance.id).values_list(
-                    'user_id')))
+        queryset = instance.user_id
         serializer = UserSerializer(queryset, many=True)
         return serializer.data
 
