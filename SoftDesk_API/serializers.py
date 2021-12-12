@@ -45,7 +45,7 @@ class RegisterSerializer(ModelSerializer):
 class ProjectListSerializer(ModelSerializer):
     class Meta:
         model = Project
-        fields = ['id', 'author_user_id', 'title']
+        fields = ['id', 'title']
 
 
 class UserSerializer(ModelSerializer):
@@ -73,4 +73,4 @@ class ContributorSerializer(ModelSerializer):
 class ProjectDetailsSerializer(ModelSerializer):
     class Meta:
         model = Project
-        fields = ['id', 'author_user_id', 'title', 'description']
+        fields = ['id', 'title', 'description', 'proj_type']

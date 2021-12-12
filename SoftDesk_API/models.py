@@ -15,12 +15,12 @@ class Project(models.Model):
         (ANDROID, 'android')
     )
 
-    title = models.CharField(max_length=255)
-    description = models.CharField(max_length=1024)
+    title = models.CharField(max_length=255, null=False)
+    description = models.CharField(max_length=1024, null=False)
     proj_type = models.CharField(max_length=16, choices=PROJECT_TYPE,
-                                 verbose_name='project_type')
-    author_user_id = models.ForeignKey(to=settings.AUTH_USER_MODEL,
-                                       on_delete=models.CASCADE)
+                                 verbose_name='project_type', null=False)
+    # author_user_id = models.ForeignKey(to=settings.AUTH_USER_MODEL,
+    #                                    on_delete=models.CASCADE)
 
 
 class Contributor(models.Model):
