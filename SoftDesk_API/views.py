@@ -17,7 +17,32 @@ class RegisterView(CreateAPIView):
     serializer_class = RegisterSerializer
 
 
-class ProjectViewset(ModelViewSet):
+class ProjectUserViewset:
+
+    @action(detail=True, methods=['get', 'post'])
+    def users(self, request, pk):
+        if request.method == 'GET':
+            project = self.get_object()
+            serializer = ContributorSerializer
+            queryset = Contributor.objects.filter(project_id=project.id)
+            return Response(serializer(queryset, many=True).data)
+
+        if request.method == 'POST':
+            project = self.get_object()
+            data = request.data
+            new_username = data['new_user']
+            try:
+                new_user = User.objects.get(username=new_username)
+                contrib = Contributor.objects.create(user_id=new_user.id,
+                                                     project_id=project,
+                                                     role='CONTRIBUTOR')
+                contrib.save()
+                return Response(data='New user added', status=200)
+            except User.DoesNotExist:
+                raise NotFound('Invalid user name')
+
+
+class ProjectViewset(ModelViewSet, ProjectUserViewset):
     serializer_class = ProjectListSerializer
     detail_serializer_class = ProjectDetailsSerializer
 
@@ -42,24 +67,7 @@ class ProjectViewset(ModelViewSet):
         else:
             return Response(serializer.errors, status=400)
 
-    @action(detail=True, methods=['get', 'post'])
-    def users(self, request, pk):
-        if request.method == 'GET':
-            project = self.get_object()
-            serializer = ContributorSerializer
-            queryset = Contributor.objects.filter(project_id=project.id)
-            return Response(serializer(queryset, many=True).data)
 
-        if request.method == 'POST':
-            project = self.get_object()
-            data = request.data
-            new_username = data['new_user']
-            try:
-                new_user = User.objects.get(username=new_username)
-                contrib = Contributor.objects.create(user_id=new_user.id,
-                                                     project_id=project,
-                                                     role='CONTRIBUTOR')
-                contrib.save()
-                return Response(data='New user added', status=200)
-            except User.DoesNotExist:
-                raise NotFound('Invalid user name')
+
+
+
