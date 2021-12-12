@@ -4,6 +4,7 @@ from SoftDesk_API.models import Project, Comment, Contributor, Issue
 from django.contrib.auth.models import User
 from rest_framework.validators import UniqueValidator
 from django.contrib.auth.password_validation import validate_password
+from rest_framework.decorators import action
 
 
 class RegisterSerializer(ModelSerializer):
@@ -44,12 +45,32 @@ class RegisterSerializer(ModelSerializer):
 class ProjectListSerializer(ModelSerializer):
     class Meta:
         model = Project
-        fields = ['id', 'title', 'description']
+        fields = ['id', 'author_user_id', 'title']
+
+
+class UserSerializer(ModelSerializer):
+    class Meta:
+        model = User
+        fields = ('id', 'first_name', 'last_name', 'email')
+
+
+class ContributorSerializer(ModelSerializer):
+    users = SerializerMethodField()
+
+    class Meta:
+        model = Contributor
+        fields = ('users', 'role')
+
+    def get_users(self, instance):
+        queryset = User.objects.filter(
+            id__in=(
+                Contributor.objects.filter(project_id=instance.id).values_list(
+                    'user_id')))
+        serializer = UserSerializer(queryset, many=True)
+        return serializer.data
 
 
 class ProjectDetailsSerializer(ModelSerializer):
-    project = SerializerMethodField()
-
     class Meta:
         model = Project
-        fields = ['id', 'title', 'description', ]
+        fields = ['id', 'author_user_id', 'title', 'description']

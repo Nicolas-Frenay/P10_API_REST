@@ -3,30 +3,83 @@ from django.conf import settings
 
 
 class Project(models.Model):
+    BACK_END = 'BACK_END'
+    FRONT_END = 'FRONT_END'
+    IOS = 'IOS'
+    ANDROID = 'ANDROID'
+
+    PROJECT_TYPE = (
+        (BACK_END, 'back_end'),
+        (FRONT_END, 'front_end'),
+        (IOS, 'ios'),
+        (ANDROID, 'android')
+    )
+
     title = models.CharField(max_length=255)
     description = models.CharField(max_length=1024)
-    proj_type = models.CharField(max_length=128)
-    # optionnel si c'est plus simple avec
-    # author_user_id = models.ManyToManyField(to=settings.AUTH_USER_MODEL,
-    #                                    on_delete=models.CASCADE)
+    proj_type = models.CharField(max_length=16, choices=PROJECT_TYPE,
+                                 verbose_name='project_type')
+    author_user_id = models.ForeignKey(to=settings.AUTH_USER_MODEL,
+                                       on_delete=models.CASCADE)
 
 
 class Contributor(models.Model):
+    AUTHOR = 'AUTHOR'
+    CONTRIBUTOR = 'CONTRIBUTOR'
+
+    ROLE_LIST = (
+        (AUTHOR, 'author'),
+        (CONTRIBUTOR, 'contributor')
+    )
+    user_id = models.IntegerField(default=None)
     project_id = models.ForeignKey(to=Project,
                                    on_delete=models.CASCADE)
     # permissions =  choice field ?
-    role = models.CharField(max_length=128)
+    role = models.CharField(max_length=16, choices=ROLE_LIST)
 
 
 class Issue(models.Model):
+    HIGH = 'HIGH'
+    MEDIUM = 'MEDIUM'
+    LOW = 'LOW'
+
+    PRIORITY_LIST = (
+        (HIGH, 'high'),
+        (MEDIUM, 'medium'),
+        (LOW, 'low')
+    )
+
+    BUG = 'BUG'
+    IMPROVEMENT = 'IMPROVEMENT'
+    TASK = 'TASK'
+
+    TAGS_LIST = (
+        (BUG, 'bug'),
+        (IMPROVEMENT, 'improvement'),
+        (TASK, 'task')
+    )
+
+    TO_DO = 'TO_DO'
+    ONGOING = 'ONGOING'
+    FINISH = 'FINISH'
+
+    STATUS_LIST = (
+        (TO_DO, 'to_do'),
+        (ONGOING, 'ongoing'),
+        (FINISH, 'finish')
+    )
+
     title = models.CharField(max_length=255)
     desc = models.CharField(max_length=1024)
-    tag = models.CharField(max_length=128)
-    priority = models.CharField(max_length=32)
+    tag = models.CharField(max_length=16, choices=TAGS_LIST)
+    priority = models.CharField(max_length=16, choices=PRIORITY_LIST)
     project_id = models.IntegerField()
-    status = models.CharField(max_length=32)
-    author_user_id = models.ManyToManyField(to=settings.AUTH_USER_MODEL)
-    assignee_user_id = models.ManyToManyField(to=Project)
+    status = models.CharField(max_length=16, choices=STATUS_LIST)
+    author_user_id = models.ManyToManyField(to=settings.AUTH_USER_MODEL,
+                                            related_name='author')
+    assignee_user_id = models.ManyToManyField(to=settings.AUTH_USER_MODEL,
+                                              related_name='assignee',
+                                              default=author_user_id)
     created_time = models.DateTimeField(auto_now_add=True)
 
 
