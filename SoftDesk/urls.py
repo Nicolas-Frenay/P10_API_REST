@@ -38,10 +38,10 @@ users_router.register(r'users', UserViewset, basename='users')
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api-auth', include('rest_framework.urls')),
-    path('', include(router.urls)),
-    path('', include(users_router.urls)),
-    path('login/', TokenObtainPairView.as_view(),
+    path('api/', include(router.urls)),
+    path('api/', include(users_router.urls)),
+    path('api/login/', TokenObtainPairView.as_view(),
          name='token_obtains_pairs'),
-    path('login/refresh/', TokenRefreshView.as_view(), name='refresh_token'),
-    path('signup/', RegisterView.as_view(), name='auth_register')
+    path('api/login/refresh/', TokenRefreshView.as_view(), name='refresh_token'),
+    path('api/signup/', RegisterView.as_view(), name='auth_register')
 ]
