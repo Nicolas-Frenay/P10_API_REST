@@ -15,7 +15,9 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
-from SoftDesk_API.views import ProjectViewset, RegisterView, ProjectUserViewset
+from apps.projects.views import ProjectViewset
+from apps.authentication.views import RegisterView
+from apps.contributors.views import UserViewset
 # from rest_framework import routers
 from rest_framework_nested import routers
 from rest_framework_simplejwt.views import TokenObtainPairView, \
@@ -25,7 +27,7 @@ router = routers.SimpleRouter()
 router.register(r'projects', ProjectViewset, basename='project_list')
 
 users_router = routers.NestedSimpleRouter(router, r'projects', lookup='project')
-users_router.register(r'users', ProjectUserViewset, basename='users')
+users_router.register(r'users', UserViewset, basename='users')
 
 # issues_router = routers.NestedSimpleRouter(router, r'projects', lookup='project')
 # issues_router.register()

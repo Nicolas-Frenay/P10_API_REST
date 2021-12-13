@@ -40,7 +40,11 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
     'rest_framework_simplejwt',
-    'SoftDesk_API',
+    'apps.authentication',
+    'apps.projects',
+    'apps.contributors',
+    'apps.issues',
+    'apps.comments'
 ]
 
 MIDDLEWARE = [
