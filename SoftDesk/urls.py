@@ -27,6 +27,12 @@ router.register(r'projects', ProjectViewset, basename='project_list')
 users_router = routers.NestedSimpleRouter(router, r'projects', lookup='project')
 users_router.register(r'users', ProjectUserViewset, basename='users')
 
+# issues_router = routers.NestedSimpleRouter(router, r'projects', lookup='project')
+# issues_router.register()
+
+# comments_router = routers.NestedSimpleRouter(router, r'issues', lookup='issue')
+# comments_router.register()
+
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api-auth', include('rest_framework.urls')),
