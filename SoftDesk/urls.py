@@ -15,18 +15,23 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
-from SoftDesk_API.views import ProjectViewset, RegisterView
-from rest_framework import routers
+from SoftDesk_API.views import ProjectViewset, RegisterView, ProjectUserViewset
+# from rest_framework import routers
+from rest_framework_nested import routers
 from rest_framework_simplejwt.views import TokenObtainPairView, \
     TokenRefreshView
 
 router = routers.SimpleRouter()
-router.register('projects', ProjectViewset, basename='project_list')
+router.register(r'projects', ProjectViewset, basename='project_list')
+
+users_router = routers.NestedSimpleRouter(router, r'projects', lookup='project')
+users_router.register(r'users', ProjectUserViewset, basename='users')
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api-auth', include('rest_framework.urls')),
     path('', include(router.urls)),
+    path('', include(users_router.urls)),
     path('login/', TokenObtainPairView.as_view(),
          name='token_obtains_pairs'),
     path('login/refresh/', TokenRefreshView.as_view(), name='refresh_token'),

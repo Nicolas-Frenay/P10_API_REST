@@ -6,7 +6,8 @@ from rest_framework.generics import CreateAPIView
 from django.contrib.auth.models import User
 from SoftDesk_API.models import Project, Contributor, Comment, Issue
 from SoftDesk_API.serializers import ProjectListSerializer, \
-    ProjectDetailsSerializer, RegisterSerializer, ContributorSerializer
+    ProjectDetailsSerializer, RegisterSerializer, ContributorSerializer, \
+    UserSerializer
 from rest_framework.permissions import IsAuthenticated
 
 
@@ -16,36 +17,45 @@ class RegisterView(CreateAPIView):
     serializer_class = RegisterSerializer
 
 
-class ProjectUserViewset:
+class ProjectUserViewset(ModelViewSet):
+    serializer_class = ContributorSerializer
 
-    @action(detail=True, methods=['get', 'post'])
-    def users(self, request, pk):
-        if request.method == 'GET':
-            project = self.get_object()
-            serializer = ContributorSerializer
-            queryset = Contributor.objects.filter(project_id=project.id)
-            return Response(serializer(queryset, many=True).data)
+    permission_classes = [IsAuthenticated]
 
-        if request.method == 'POST':
-            project = self.get_object()
-            data = request.data
-            new_username = data['new_user']
-            try:
-                new_user = User.objects.get(username=new_username)
-                contrib = Contributor.objects.create(user_id=new_user.id,
-                                                     project_id=project,
-                                                     role='CONTRIBUTOR')
-                contrib.save()
-                return Response(data='New user added', status=200)
-            except User.DoesNotExist:
-                raise NotFound('Invalid user name')
+    def get_queryset(self):
+        return Contributor.objects.filter(project_id=self.kwargs['project_pk'])
+
+    def create(self, request, *args, **kwargs):
+        new_username = request.data['new_user']
+        project = Project.objects.get(id=self.kwargs['project_pk'])
+        try:
+            new_user = User.objects.get(username=new_username)
+            contrib = Contributor.objects.create(project_id=project,
+                                                 role='CONTRIBUTOR')
+            contrib.user_id.set([new_user.id, ])
+            contrib.save()
+            return Response(data='New user added', status=200)
+        except User.DoesNotExist:
+            raise NotFound('Invalid user name')
+
+    def destroy(self, request, *args, **kwargs):
+        #TODO renvois pas d'erreur si contrib déjà effacé
+        try:
+            user = Contributor.objects.filter(
+                user_id=self.kwargs['pk'],
+                project_id_id=self.kwargs['project_pk'])
+            user.delete()
+            return Response(data='User deleted', status=200)
+        except Contributor.DoesNotExist:
+            raise NotFound('User not found')
 
 
-class ProjectViewset(ModelViewSet, ProjectUserViewset):
+
+class ProjectViewset(ModelViewSet):
     serializer_class = ProjectListSerializer
     detail_serializer_class = ProjectDetailsSerializer
 
-    # permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
         return Project.objects.all()
@@ -62,7 +72,7 @@ class ProjectViewset(ModelViewSet, ProjectUserViewset):
             id = serializer.data['id']
             contributor = Contributor.objects.create(project_id_id=id,
                                                      role='AUTHOR')
-            contributor.user_id.set([request.user.id,])
+            contributor.user_id.set([request.user.id, ])
             contributor.save()
             return Response(serializer.data)
         else:
