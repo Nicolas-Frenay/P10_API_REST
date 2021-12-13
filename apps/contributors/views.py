@@ -31,7 +31,6 @@ class UserViewset(ModelViewSet):
             raise NotFound('Invalid user name')
 
     def destroy(self, request, *args, **kwargs):
-        #TODO renvois pas d'erreur si contrib déjà effacé
         try:
             user = Contributor.objects.get(
                 user_id=self.kwargs['pk'],

@@ -1,14 +1,18 @@
 from rest_framework.serializers import ModelSerializer
 from apps.projects.models import Project
+from apps.contributors.models import Contributor
 
 
-class ProjectListSerializer(ModelSerializer):
+class ProjectSerializer(ModelSerializer):
     class Meta:
         model = Project
-        fields = ['id', 'title', 'proj_type']
+        fields = '__all__'
 
+    def create(self, validated_data):
+        project = super().create(validated_data)
+        user = self.context['request'].user
+        Contributor.objects.create(project_id_id=project.id, user_id=user,
+                                   role='AUTHOR')
+        return(project)
 
-class ProjectDetailsSerializer(ModelSerializer):
-    class Meta:
-        model = Project
-        fields = ['id', 'title', 'description', 'proj_type']
+    # TODO: voire pour partial update avec PUT
