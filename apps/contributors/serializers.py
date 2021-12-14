@@ -1,6 +1,6 @@
 from rest_framework.serializers import ModelSerializer, \
     SerializerMethodField, ValidationError
-from rest_framework.validators import UniqueTogetherValidator
+from rest_framework.validators import UniqueTogetherValidator, UniqueValidator
 from apps.contributors.models import Contributor
 from django.core.exceptions import NON_FIELD_ERRORS
 from django.contrib.auth.models import User
@@ -24,13 +24,6 @@ class ContributorSerializer(ModelSerializer):
         queryset = instance.user_id
         serializer = UserSerializer(queryset)
         return serializer.data
-
-    def create(self, validated_data):
-        if User.objects.filter(id=self.context['request'].data['user_id']):
-            new_user = User.objects.get(
-                id=self.context['request'].data['user_id'])
-            validated_data['user_id'] = new_user
-            return Contributor.objects.create(**validated_data)
 
 
 class UserSerializer(ModelSerializer):

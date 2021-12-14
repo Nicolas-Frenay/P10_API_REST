@@ -2,7 +2,6 @@ from rest_framework.viewsets import ModelViewSet
 from rest_framework.permissions import IsAuthenticated
 from apps.issues.serializers import IssueSerializer
 from apps.issues.models import Issue
-from django.contrib.auth.models import User
 
 
 class IssueViewset(ModelViewSet):
