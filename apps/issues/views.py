@@ -14,7 +14,7 @@ class IssueViewset(ModelViewSet):
     def get_serializer_context(self):
         if self.action == 'create':
             project = self.kwargs['project_pk']
-            user = self.request.user.id
+            user = self.request.user
             context = super(IssueViewset, self).get_serializer_context()
             context['request'].data._mutable = True
             context['request'].data.update({'project_id': project})

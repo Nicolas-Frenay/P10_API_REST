@@ -31,3 +31,10 @@ class IssueSerializer(ModelSerializer):
         queryset = instance.assignee_user_id
         serializer = UserSerializer(queryset)
         return serializer.data
+
+    def create(self, validated_data):
+        author = self.context['request'].data['author_user_id']
+        assignee = self.context['request'].data['assignee_user_id']
+        validated_data['author_user_id'] = author
+        validated_data['assignee_user_id'] = assignee
+        return Issue.objects.create(**validated_data)

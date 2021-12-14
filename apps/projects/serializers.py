@@ -1,12 +1,26 @@
-from rest_framework.serializers import ModelSerializer
+from rest_framework.serializers import ModelSerializer, SerializerMethodField
 from apps.projects.models import Project
 from apps.contributors.models import Contributor
+from apps.issues.models import Issue
 
 
 class ProjectSerializer(ModelSerializer):
+    contributors_count = SerializerMethodField(read_only=True)
+    issues_count = SerializerMethodField(read_only=True)
     class Meta:
         model = Project
-        fields = '__all__'
+        fields = ('id', 'title', 'description', 'proj_type',
+                  'issues_count', 'contributors_count')
+
+    def get_contributors_count(self, instance):
+        project = instance.id
+        count = Contributor.objects.filter(project_id=project).count()
+        return count
+
+    def get_issues_count(self, instance):
+        project = instance.id
+        count = Issue.objects.filter(project_id=project).count()
+        return count
 
     def create(self, validated_data):
         project = super().create(validated_data)
