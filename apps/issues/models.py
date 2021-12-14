@@ -40,10 +40,13 @@ class Issue(models.Model):
     priority = models.CharField(max_length=16, choices=PRIORITY_LIST)
     project_id = models.ForeignKey(to=Project, on_delete=models.CASCADE)
     status = models.CharField(max_length=16, choices=STATUS_LIST)
-    author_user_id = models.ManyToManyField(to=settings.AUTH_USER_MODEL,
-                                            related_name='author')
-    assignee_user_id = models.ManyToManyField(to=settings.AUTH_USER_MODEL,
-                                              related_name='assignee',
-                                              default=author_user_id)
+    author_user_id = models.ForeignKey(to=settings.AUTH_USER_MODEL,
+                                       null=True,
+                                       on_delete=models.CASCADE,
+                                       related_name='author')
+    assignee_user_id = models.ForeignKey(to=settings.AUTH_USER_MODEL,
+                                         null=True,
+                                         on_delete=models.CASCADE,
+                                         related_name='assignee')
     created_time = models.DateTimeField(auto_now_add=True)
 

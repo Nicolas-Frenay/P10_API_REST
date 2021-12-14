@@ -18,6 +18,7 @@ from django.urls import path, include
 from apps.projects.views import ProjectViewset
 from apps.authentication.views import RegisterView
 from apps.contributors.views import UserViewset
+from apps.issues.views import IssueViewset
 # from rest_framework import routers
 from rest_framework_nested import routers
 from rest_framework_simplejwt.views import TokenObtainPairView, \
@@ -29,8 +30,8 @@ router.register(r'projects', ProjectViewset, basename='project_list')
 users_router = routers.NestedSimpleRouter(router, r'projects', lookup='project')
 users_router.register(r'users', UserViewset, basename='users')
 
-# issues_router = routers.NestedSimpleRouter(router, r'projects', lookup='project')
-# issues_router.register()
+issues_router = routers.NestedSimpleRouter(router, r'projects', lookup='project')
+issues_router.register(r'issues', IssueViewset, basename='issues')
 
 # comments_router = routers.NestedSimpleRouter(router, r'issues', lookup='issue')
 # comments_router.register()
@@ -40,6 +41,7 @@ urlpatterns = [
     path('api-auth', include('rest_framework.urls')),
     path('api/', include(router.urls)),
     path('api/', include(users_router.urls)),
+    path('api/', include(issues_router.urls)),
     path('api/login/', TokenObtainPairView.as_view(),
          name='token_obtains_pairs'),
     path('api/login/refresh/', TokenRefreshView.as_view(), name='refresh_token'),

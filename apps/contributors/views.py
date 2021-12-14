@@ -17,7 +17,6 @@ class UserViewset(ModelViewSet):
         project = self.kwargs['project_pk']
         context = super(UserViewset, self).get_serializer_context()
         context.update({'project': project})
-        context.update({'request': self.request})
         return context
 
     def destroy(self, request, *args, **kwargs):
