@@ -20,5 +20,5 @@ class IssueViewset(ModelViewSet):
             context['request'].data._mutable = True
             context['request'].data.update({'project_id': project})
             context['request'].data.update({'author_user_id': user})
-            context['request'].data.update({'assignee_user_id':user})
+            context['request'].data.update({'assignee_user_id': user})
             return context

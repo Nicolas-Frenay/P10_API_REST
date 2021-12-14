@@ -1,42 +1,36 @@
 from rest_framework.serializers import ModelSerializer, \
     SerializerMethodField, ValidationError
+from rest_framework.validators import UniqueTogetherValidator
 from apps.contributors.models import Contributor
-from apps.projects.models import Project
+from django.core.exceptions import NON_FIELD_ERRORS
 from django.contrib.auth.models import User
 
 
 class ContributorSerializer(ModelSerializer):
-    users = SerializerMethodField()
+    user = SerializerMethodField()
 
     class Meta:
         model = Contributor
-        fields = ('users', 'role')
+        fields = ('project_id', 'user_id', 'user', 'role')
+        validators = [
+            UniqueTogetherValidator(
+                queryset=Contributor.objects.all(),
+                fields=['user_id', 'project_id'],
+                message='User already working on that project'
+            )
+        ]
 
-    def get_users(self, instance):
+    def get_user(self, instance):
         queryset = instance.user_id
         serializer = UserSerializer(queryset)
         return serializer.data
 
     def create(self, validated_data):
-        new_username = self.context['request'].data['new_user']
-        role = self.context['request'].data['role']
-        project_id = self.context['project']
-        project = Project.objects.get(id=project_id)
-
-        try:
-            new_user = User.objects.get(username=new_username)
-            try:
-                if Contributor.objects.get(project_id=project,
-                                           user_id=new_user):
-                    raise ValidationError(
-                        'User already working on this project')
-            except Contributor.DoesNotExist:
-                contrib = Contributor.objects.create(project_id=project,
-                                                     role=role,
-                                                     user_id=new_user)
-                return contrib
-        except User.DoesNotExist:
-            raise ValidationError('Invalid user name')
+        if User.objects.filter(id=self.context['request'].data['user_id']):
+            new_user = User.objects.get(
+                id=self.context['request'].data['user_id'])
+            validated_data['user_id'] = new_user
+            return Contributor.objects.create(**validated_data)
 
 
 class UserSerializer(ModelSerializer):
