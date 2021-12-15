@@ -1,15 +1,21 @@
 from rest_framework.viewsets import ModelViewSet
 from rest_framework.permissions import IsAuthenticated
-from apps.issues.serializers import IssueSerializer
+from apps.issues.serializers import IssueSerializer, IssueCreateSerializer
 from apps.issues.models import Issue
 
 
 class IssueViewset(ModelViewSet):
     serializer_class = IssueSerializer
+    create_serializer = IssueCreateSerializer
     permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
         return Issue.objects.filter(project_id=self.kwargs['project_pk'])
+
+    def get_serializer_class(self):
+        if self.action == 'create':
+            return self.create_serializer
+        return super().get_serializer_class()
 
     def get_serializer_context(self):
         if self.action == 'create':
@@ -18,6 +24,6 @@ class IssueViewset(ModelViewSet):
             context = super(IssueViewset, self).get_serializer_context()
             context['request'].data._mutable = True
             context['request'].data.update({'project_id': project})
-            context['request'].data.update({'author_user_id': user})
-            context['request'].data.update({'assignee_user_id': user})
+            context['request'].data.update({'author_user_id': user.id})
+            context['request'].data.update({'assignee_user_id': user.id})
             return context

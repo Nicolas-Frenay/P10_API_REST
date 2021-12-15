@@ -2,16 +2,8 @@ from rest_framework.viewsets import ModelViewSet
 from rest_framework.permissions import IsAuthenticated
 from apps.contributors.serializers import ContributorSerializer
 from apps.contributors.models import Contributor
-from django.contrib.auth.models import User
 from rest_framework.response import Response
 from rest_framework.exceptions import NotFound
-from rest_framework.exceptions import APIException
-
-
-class UnknownUser(APIException):
-    status_code = 404
-    default_code = 'Search error'
-    default_detail = 'Unknown user'
 
 
 class UserViewset(ModelViewSet):

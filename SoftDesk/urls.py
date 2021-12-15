@@ -19,7 +19,7 @@ from apps.projects.views import ProjectViewset
 from apps.authentication.views import RegisterView
 from apps.contributors.views import UserViewset
 from apps.issues.views import IssueViewset
-# from rest_framework import routers
+from apps.comments.views import CommentViewset
 from rest_framework_nested import routers
 from rest_framework_simplejwt.views import TokenObtainPairView, \
     TokenRefreshView
@@ -27,14 +27,17 @@ from rest_framework_simplejwt.views import TokenObtainPairView, \
 router = routers.SimpleRouter()
 router.register(r'projects', ProjectViewset, basename='project_list')
 
-users_router = routers.NestedSimpleRouter(router, r'projects', lookup='project')
+users_router = routers.NestedSimpleRouter(router, r'projects',
+                                          lookup='project')
 users_router.register(r'users', UserViewset, basename='users')
 
-issues_router = routers.NestedSimpleRouter(router, r'projects', lookup='project')
+issues_router = routers.NestedSimpleRouter(router, r'projects',
+                                           lookup='project')
 issues_router.register(r'issues', IssueViewset, basename='issues')
 
-# comments_router = routers.NestedSimpleRouter(router, r'issues', lookup='issue')
-# comments_router.register()
+comments_router = routers.NestedSimpleRouter(issues_router, r'issues',
+                                             lookup='issue')
+comments_router.register(r'comments', CommentViewset, basename='comments')
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -42,8 +45,10 @@ urlpatterns = [
     path('api/', include(router.urls)),
     path('api/', include(users_router.urls)),
     path('api/', include(issues_router.urls)),
+    path('api/', include(comments_router.urls)),
     path('api/login/', TokenObtainPairView.as_view(),
          name='token_obtains_pairs'),
-    path('api/login/refresh/', TokenRefreshView.as_view(), name='refresh_token'),
+    path('api/login/refresh/', TokenRefreshView.as_view(),
+         name='refresh_token'),
     path('api/signup/', RegisterView.as_view(), name='auth_register')
 ]

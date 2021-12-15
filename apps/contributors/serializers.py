@@ -1,8 +1,6 @@
-from rest_framework.serializers import ModelSerializer, \
-    SerializerMethodField, ValidationError
-from rest_framework.validators import UniqueTogetherValidator, UniqueValidator
+from rest_framework.serializers import ModelSerializer, SerializerMethodField
+from rest_framework.validators import UniqueTogetherValidator
 from apps.contributors.models import Contributor
-from django.core.exceptions import NON_FIELD_ERRORS
 from django.contrib.auth.models import User
 
 

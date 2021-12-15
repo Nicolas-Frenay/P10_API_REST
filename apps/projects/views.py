@@ -1,4 +1,3 @@
-from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
 from rest_framework.permissions import IsAuthenticated
 from apps.projects.serializers import ProjectSerializer, \
@@ -18,7 +17,3 @@ class ProjectViewset(ModelViewSet):
         if self.action == 'retrieve':
             return self.detail_serializer_class
         return super().get_serializer_class()
-
-    def destroy(self, request, *args, **kwargs):
-        super().destroy(request, *args, **kwargs)
-        return Response(data='Project deleted', status=200)

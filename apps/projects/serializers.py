@@ -32,8 +32,6 @@ class ProjectSerializer(ModelSerializer):
                                    role='AUTHOR')
         return(project)
 
-    # TODO: voire pour partial update avec PUT
-
 
 class ProjectDetailSerializer(ModelSerializer):
     contributors = SerializerMethodField(read_only=True)
