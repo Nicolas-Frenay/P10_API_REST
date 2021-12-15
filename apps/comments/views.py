@@ -17,6 +17,6 @@ class CommentViewset(ModelViewSet):
             user = self.request.user
             context = super(CommentViewset, self).get_serializer_context()
             context['request'].data._mutable = True
-            context['request'].data.update({'author_user_id': user})
+            context['request'].data.update({'author_user_id': user.id})
             context['request'].data.update({'issue_id': issue})
             return context
