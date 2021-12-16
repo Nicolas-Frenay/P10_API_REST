@@ -10,8 +10,8 @@ class ProjectViewset(ModelViewSet):
     serializer_class = ProjectSerializer
     detail_serializer_class = ProjectDetailSerializer
     permission_classes = [IsAuthenticated]
-    author_permission_classes = [IsProjectAuthor]
-    contributor_permission_classes = [IsProjectContributor]
+    author_permission_classes = [IsAuthenticated, IsProjectAuthor]
+    contributor_permission_classes = [IsAuthenticated, IsProjectContributor]
 
     SAFE_METHODS = ['list']
 

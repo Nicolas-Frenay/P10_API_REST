@@ -2,12 +2,17 @@ from rest_framework.viewsets import ModelViewSet
 from rest_framework.permissions import IsAuthenticated
 from apps.issues.serializers import IssueSerializer, IssueCreateSerializer
 from apps.issues.models import Issue
+from SoftDesk.permissions import IsProjectContributor, IsIssueAuthor
 
 
 class IssueViewset(ModelViewSet):
     serializer_class = IssueSerializer
     create_serializer = IssueCreateSerializer
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated, IsProjectContributor]
+    author_permission_classes = [IsAuthenticated, IsProjectContributor,
+                                 IsIssueAuthor]
+
+    SAFE_METHODS = ['list']
 
     def get_queryset(self):
         return Issue.objects.filter(project_id=self.kwargs['project_pk'])
@@ -27,3 +32,8 @@ class IssueViewset(ModelViewSet):
             context['request'].data.update({'author_user_id': user.id})
             context['request'].data.update({'assignee_user_id': user.id})
             return context
+
+    def get_permissions(self):
+        if self.action not in self.SAFE_METHODS:
+            self.permission_classes = self.author_permission_classes
+        return super().get_permissions()
