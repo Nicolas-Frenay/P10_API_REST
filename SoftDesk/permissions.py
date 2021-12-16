@@ -1,5 +1,4 @@
 from rest_framework.permissions import BasePermission
-from django.contrib.auth.models import User
 from apps.contributors.models import Contributor
 
 
@@ -17,7 +16,6 @@ class IsProjectAuthor(BasePermission):
         return False
 
 
-
 class IsProjectContributor(BasePermission):
     def has_permission(self, request, view):
         if request.user.is_superuser:
@@ -31,7 +29,7 @@ class IsProjectContributor(BasePermission):
             return True
         return False
 
-class IsIssueAuthor(BasePermission):
+class IsAuthor(BasePermission):
     def has_object_permission(self, request, view, obj):
         if request.user.is_superuser:
             return True

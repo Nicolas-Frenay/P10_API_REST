@@ -2,7 +2,7 @@ from rest_framework.viewsets import ModelViewSet
 from rest_framework.permissions import IsAuthenticated
 from apps.issues.serializers import IssueSerializer, IssueCreateSerializer
 from apps.issues.models import Issue
-from SoftDesk.permissions import IsProjectContributor, IsIssueAuthor
+from SoftDesk.permissions import IsProjectContributor, IsAuthor
 
 
 class IssueViewset(ModelViewSet):
@@ -10,7 +10,7 @@ class IssueViewset(ModelViewSet):
     create_serializer = IssueCreateSerializer
     permission_classes = [IsAuthenticated, IsProjectContributor]
     author_permission_classes = [IsAuthenticated, IsProjectContributor,
-                                 IsIssueAuthor]
+                                 IsAuthor]
 
     SAFE_METHODS = ['list']
 
