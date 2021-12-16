@@ -3,6 +3,7 @@ from rest_framework.permissions import IsAuthenticated
 from apps.comments.serializers import CommentSerializer
 from apps.comments.models import Comment
 from SoftDesk.permissions import IsProjectContributor, IsAuthor
+from rest_framework.exceptions import MethodNotAllowed
 
 
 class CommentViewset(ModelViewSet):
@@ -30,3 +31,8 @@ class CommentViewset(ModelViewSet):
         if self.action not in self.SAFE_METHODS:
             self.permission_classes = self.author_permission_classes
         return super().get_permissions()
+
+    def retrieve(self, request, *args, **kwargs):
+        raise MethodNotAllowed('GET',
+                               detail='Method "GET" not allowed with lookup '
+                                      'on this endpoint')

@@ -3,12 +3,13 @@ from rest_framework.permissions import IsAuthenticated
 from apps.contributors.serializers import ContributorSerializer
 from apps.contributors.models import Contributor
 from rest_framework.response import Response
-from rest_framework.exceptions import NotFound
+from rest_framework.exceptions import NotFound, MethodNotAllowed
+from SoftDesk.permissions import IsProjectContributor
 
 
 class UserViewset(ModelViewSet):
     serializer_class = ContributorSerializer
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated, IsProjectContributor]
 
     def get_queryset(self):
         return Contributor.objects.filter(project_id=self.kwargs['project_pk'])
@@ -32,3 +33,18 @@ class UserViewset(ModelViewSet):
             return Response(data='User deleted', status=200)
         except Contributor.DoesNotExist:
             raise NotFound('User not found')
+
+    def retrieve(self, request, *args, **kwargs):
+        raise MethodNotAllowed('GET',
+                               detail='Method "GET" not allowed with lookup '
+                                      'on this endpoint')
+
+    def update(self, request, *args, **kwargs):
+        raise MethodNotAllowed('PUT',
+                               detail='Method "PUT" not allowed on this '
+                                      'endpoint')
+
+    def partial_update(self, request, *args, **kwargs):
+        raise MethodNotAllowed('PATCH',
+                               detail='Method "PATCH" not allowed on this '
+                                      'endpoint')

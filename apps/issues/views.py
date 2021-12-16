@@ -3,6 +3,7 @@ from rest_framework.permissions import IsAuthenticated
 from apps.issues.serializers import IssueSerializer, IssueCreateSerializer
 from apps.issues.models import Issue
 from SoftDesk.permissions import IsProjectContributor, IsAuthor
+from rest_framework.exceptions import MethodNotAllowed
 
 
 class IssueViewset(ModelViewSet):
@@ -37,3 +38,8 @@ class IssueViewset(ModelViewSet):
         if self.action not in self.SAFE_METHODS:
             self.permission_classes = self.author_permission_classes
         return super().get_permissions()
+
+    def retrieve(self, request, *args, **kwargs):
+        raise MethodNotAllowed('GET',
+                               detail='Method "GET" not allowed with lookup '
+                                      'on this endpoint')
