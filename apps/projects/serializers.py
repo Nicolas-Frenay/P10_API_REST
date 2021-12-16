@@ -3,7 +3,7 @@ from apps.projects.models import Project
 from apps.contributors.models import Contributor
 from apps.contributors.serializers import ContributorSerializer
 from apps.issues.models import Issue
-from apps.issues.serializers import IssueSerializer
+from apps.issues.serializers import IssueListSerializer
 
 
 class ProjectSerializer(ModelSerializer):
@@ -51,5 +51,5 @@ class ProjectDetailSerializer(ModelSerializer):
     def get_issues(self, instance):
         project = instance.id
         queryset = Issue.objects.filter(project_id=project)
-        serializer = IssueSerializer(queryset, many=True)
+        serializer = IssueListSerializer(queryset, many=True)
         return serializer.data

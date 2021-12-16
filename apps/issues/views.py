@@ -19,7 +19,8 @@ class IssueViewset(ModelViewSet):
         return Issue.objects.filter(project_id=self.kwargs['project_pk'])
 
     def get_serializer_class(self):
-        if self.action == 'create':
+        methods = ('create', 'update', 'partial_update')
+        if self.action in methods:
             return self.create_serializer
         return super().get_serializer_class()
 

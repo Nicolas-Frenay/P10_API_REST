@@ -50,3 +50,23 @@ class IssueCreateSerializer(ModelSerializer):
             'author_user_id',
             'assignee_user_id'
         )
+
+class IssueListSerializer(ModelSerializer):
+
+    assignee = SerializerMethodField()
+
+    class Meta:
+        model = Issue
+        fields = (
+            'id',
+            'title',
+            'tag',
+            'priority',
+            'status',
+            'assignee'
+        )
+
+    def get_assignee(self, instance):
+        queryset = User.objects.get(id=instance.assignee_user_id.id)
+        serializer = UserSerializer(queryset)
+        return serializer.data
