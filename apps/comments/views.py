@@ -1,6 +1,7 @@
 from rest_framework.viewsets import ModelViewSet
 from rest_framework.permissions import IsAuthenticated
-from apps.comments.serializers import CommentSerializer
+from apps.comments.serializers import CommentSerializer, \
+    CommentCreateSerializer
 from apps.comments.models import Comment
 from SoftDesk.permissions import IsProjectContributor, IsAuthor
 from rest_framework.exceptions import MethodNotAllowed
@@ -8,14 +9,21 @@ from rest_framework.exceptions import MethodNotAllowed
 
 class CommentViewset(ModelViewSet):
     serializer_class = CommentSerializer
+    create_serializer_class = CommentCreateSerializer
     permission_classes = [IsAuthenticated, IsProjectContributor]
     author_permission_classes = [IsAuthenticated, IsProjectContributor,
                                  IsAuthor]
 
-    SAFE_METHODS = ['list']
+    SAFE_METHODS = ['list', 'create']
 
     def get_queryset(self):
         return Comment.objects.filter(issue_id=self.kwargs['issue_pk'])
+
+    def get_serializer_class(self):
+        methods = ('create', 'update', 'partial_update')
+        if self.action in methods:
+            return self.create_serializer_class
+        return super().get_serializer_class()
 
     def get_serializer_context(self):
         if self.action == 'create':

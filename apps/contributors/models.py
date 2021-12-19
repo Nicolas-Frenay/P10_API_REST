@@ -15,6 +15,7 @@ class Contributor(models.Model):
                                 on_delete=models.CASCADE, null=True)
     project_id = models.ForeignKey(to=Project,
                                    on_delete=models.CASCADE)
-    # permissions =  choice field ?
+    permissions = models.CharField(max_length=16, choices=ROLE_LIST,
+                            default=CONTRIBUTOR)
     role = models.CharField(max_length=16, choices=ROLE_LIST,
                             default=CONTRIBUTOR)

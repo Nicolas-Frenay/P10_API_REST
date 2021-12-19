@@ -14,7 +14,7 @@ class ProjectViewset(ModelViewSet):
     author_permission_classes = [IsAuthenticated, IsProjectAuthor]
     contributor_permission_classes = [IsAuthenticated, IsProjectContributor]
 
-    SAFE_METHODS = ['list']
+    SAFE_METHODS = ['list', 'create']
 
     def get_queryset(self):
         user = self.request.user

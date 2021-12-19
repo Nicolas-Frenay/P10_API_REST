@@ -29,7 +29,7 @@ class ProjectSerializer(ModelSerializer):
         project = super().create(validated_data)
         user = self.context['request'].user
         Contributor.objects.create(project_id_id=project.id, user_id=user,
-                                   role='AUTHOR')
+                                   role='AUTHOR', permissions='AUTHOR')
         return(project)
 
 

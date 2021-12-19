@@ -6,7 +6,7 @@ class IsProjectAuthor(BasePermission):
     def has_permission(self, request, view):
         if request.user.is_superuser:
             return True
-        # Depending of the endpoint's URL, the project key is pass under a
+        # Depending of the endpoint's URL, the project's pk is pass under a
         # different key
         try:
             project = request.parser_context['kwargs']['project_pk']
@@ -19,7 +19,7 @@ class IsProjectAuthor(BasePermission):
             user = Contributor.objects.get(user_id=request.user.id,
                                            project_id=project)
         # check if the user is the project author
-            if user.role == 'AUTHOR':
+            if user.permissions == 'AUTHOR':
                 return True
         return False
 
