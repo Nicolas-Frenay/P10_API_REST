@@ -30,7 +30,8 @@ P10_OC-developpeur_python
 - dans le terminal tapez : ```python3 manage.py runserver```
 - Une fois le serveur lancé, vous pourrez accéder au site à l'adresse indiquée dans le terminal ( par defaut : http://127.0.0.1:8000/ )
 
-7) pour couper le serveur local taper <kbd>Ctrl</kbd> + <kbd>C</kbd>
+7) pour couper le serveur local taper <kbd>Ctrl</kbd> + <kbd>C</kbd> .
+
 
 8) Pour fermer l'environnement virtuel :
 - Dans le terminal, tapez : ```deactivate ```
