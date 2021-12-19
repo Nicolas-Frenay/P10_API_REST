@@ -7,6 +7,9 @@ from apps.issues.serializers import IssueListSerializer
 
 
 class ProjectSerializer(ModelSerializer):
+    """
+    List project serializer
+    """
     contributors_count = SerializerMethodField(read_only=True)
     issues_count = SerializerMethodField(read_only=True)
 
@@ -26,6 +29,10 @@ class ProjectSerializer(ModelSerializer):
         return count
 
     def create(self, validated_data):
+        """
+        overridden method for creating a contributor object with request.user
+        as author for created project
+        """
         project = super().create(validated_data)
         user = self.context['request'].user
         Contributor.objects.create(project_id_id=project.id, user_id=user,
@@ -34,6 +41,9 @@ class ProjectSerializer(ModelSerializer):
 
 
 class ProjectDetailSerializer(ModelSerializer):
+    """
+    Detail project serializer
+    """
     contributors = SerializerMethodField(read_only=True)
     issues = SerializerMethodField(read_only=True)
 

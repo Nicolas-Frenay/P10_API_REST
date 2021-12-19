@@ -26,6 +26,10 @@ class CommentViewset(ModelViewSet):
         return super().get_serializer_class()
 
     def get_serializer_context(self):
+        """
+        overridden method to add author and issue id in context
+        :return:  updated context
+        """
         if self.action == 'create':
             issue = self.kwargs['issue_pk']
             user = self.request.user
@@ -41,6 +45,9 @@ class CommentViewset(ModelViewSet):
         return super().get_permissions()
 
     def retrieve(self, request, *args, **kwargs):
+        """
+        Overridden method to block un-authorize request method
+        """
         raise MethodNotAllowed('GET',
                                detail='Method "GET" not allowed with lookup '
                                       'on this endpoint')

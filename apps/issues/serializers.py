@@ -5,6 +5,9 @@ from django.contrib.auth.models import User
 
 
 class IssueSerializer(ModelSerializer):
+    """
+    Details issue serializer
+    """
     author = SerializerMethodField()
     assignee = SerializerMethodField()
 
@@ -35,7 +38,9 @@ class IssueSerializer(ModelSerializer):
         return self.get_user(instance.assignee_user_id)
 
 class IssueCreateSerializer(ModelSerializer):
-
+    """
+    Creating issue serializer
+    """
     class Meta:
         model = Issue
         fields = (
@@ -52,7 +57,9 @@ class IssueCreateSerializer(ModelSerializer):
         )
 
 class IssueListSerializer(ModelSerializer):
-
+    """
+    List display serializer
+    """
     assignee = SerializerMethodField()
 
     class Meta:

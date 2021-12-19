@@ -4,14 +4,18 @@ from apps.contributors.serializers import UserSerializer
 
 
 class CommentCreateSerializer(ModelSerializer):
-
+    """
+    Creating comment serializer
+    """
     class Meta:
         model = Comment
         fields = ('id', 'author_user_id', 'issue_id', 'created_time', 'description')
 
 
 class CommentSerializer(ModelSerializer):
-
+    """
+    Display comment serializer
+    """
     author = SerializerMethodField()
 
     class Meta:

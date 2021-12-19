@@ -16,6 +16,10 @@ class UserViewset(ModelViewSet):
         return Contributor.objects.filter(project_id=self.kwargs['project_pk'])
 
     def get_serializer_context(self):
+        """
+        overridden method to add author and issue id in context
+        :return:  updated context
+        """
         if self.action == 'create':
             project = self.kwargs['project_pk']
             context = super(UserViewset, self).get_serializer_context()
@@ -26,6 +30,11 @@ class UserViewset(ModelViewSet):
             return context
 
     def destroy(self, request, *args, **kwargs):
+        """
+        overridden methode to check is contributor exist, and send custom
+        response if it doesn't
+        :return: http response
+        """
         try:
             user = Contributor.objects.get(
                 user_id=self.kwargs['pk'],
@@ -41,16 +50,25 @@ class UserViewset(ModelViewSet):
         return super().get_permissions()
 
     def retrieve(self, request, *args, **kwargs):
+        """
+        Overridden method to block un-authorize request method
+        """
         raise MethodNotAllowed('GET',
                                detail='Method "GET" not allowed with lookup '
                                       'on this endpoint')
 
     def update(self, request, *args, **kwargs):
+        """
+        Overridden method to block un-authorize request method
+        """
         raise MethodNotAllowed('PUT',
                                detail='Method "PUT" not allowed on this '
                                       'endpoint')
 
     def partial_update(self, request, *args, **kwargs):
+        """
+        Overridden method to block un-authorize request method
+        """
         raise MethodNotAllowed('PATCH',
                                detail='Method "PATCH" not allowed on this '
                                       'endpoint')

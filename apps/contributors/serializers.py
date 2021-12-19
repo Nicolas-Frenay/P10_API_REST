@@ -5,6 +5,9 @@ from django.contrib.auth.models import User
 
 
 class ContributorSerializer(ModelSerializer):
+    """
+    Display contributor serializer
+    """
     user = SerializerMethodField()
 
     class Meta:

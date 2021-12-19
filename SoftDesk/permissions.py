@@ -39,6 +39,7 @@ class IsProjectContributor(BasePermission):
             return True
         return False
 
+
 class IsAuthor(BasePermission):
     """
     Permission that check if request.user is author of an issue or a comment
